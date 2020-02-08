@@ -9,13 +9,14 @@ import (
 	"os"
 	"regexp"
 	"strings"
+	"time"
 )
 
 type Link struct {
-	Value    string
-	Depth    int
-	Width    int
-	Children []Link
+	Value    string `json:"value"`
+	Depth    int    `json:"tree_level"`
+	Width    int    `json:"tree_width"`
+	Children []Link `json:"children"`
 }
 
 type AdapterResolver struct{}
@@ -65,7 +66,8 @@ func (Adapter HttpSchemaAdapter) GetBasePath() string {
 	return Adapter.GetPath()
 }
 func (Adapter HttpSchemaAdapter) Content() (string, error) {
-	response, err := http.Get(Adapter.Path)
+	client := http.Client{Timeout: 15 * time.Second}
+	response, err := client.Get(Adapter.Path)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,20 +85,16 @@ type SimpleParser struct {
 func (Parser SimpleParser) ParseLinks(basePath string, skipSameBase bool) ([]string, error) {
 	var newLinks []string
 	re := regexp.MustCompile(`(?m)<a\s+(?:[^>]*?\s+)?href="([^"]*)"`)
-	links := re.FindAllStringSubmatch(string(Parser.String), -1)
-	for _, element := range links {
-		// if it's relative link - prepend our main url to it
-
+	matches := re.FindAllStringSubmatch(string(Parser.String), -1)
+	for _, element := range matches {
+		// if it's relative link - prepend our base path to it
 		var relative = !strings.HasPrefix(element[1], basePath) && !strings.HasPrefix(element[1], "http")
-
 		if relative {
 			element[1] = basePath + element[1]
 		}
-
 		if skipSameBase && relative {
 			continue
 		}
-
 		newLinks = append(newLinks, element[1])
 	}
 	return newLinks, nil
@@ -111,7 +109,7 @@ func check(e error) {
 
 func main() {
 	url := "https://www.google.ru/"
-	//url := "/home/garstas/Development/html/urlmap_test/index.html"
+	// url := "/home/garstas/Development/html/urlmap_test/index.html"
 	var width, depth = 3, 4
 	var parent = Link{url, 0, 0, nil}
 
@@ -119,7 +117,8 @@ func main() {
 	ConstructLinksTreeForNode(&parent, width, depth, 0)
 
 	DropTreeToJsonFile(parent)
-	fmt.Println("File has been generated. Have fun! :-D")
+	fmt.Printf("\nElements: %d", CountElements(parent))
+	fmt.Println("\nFile has been generated. Have fun! :-D")
 }
 
 // Writes json representation of a tree to a file
@@ -134,41 +133,45 @@ func DropTreeToJsonFile(tree Link) {
 	check(err)
 }
 
-func countLinksInNode(node Link) int {
+// Count all elements in tree recursively
+func CountElements(node Link) int {
 	var count = 1 // 1 is the firs one
 	for _, element := range node.Children {
 		if element.Children == nil {
 			// Leaf
 			count++
-		} else {
-			count += countLinksInNode(element)
+			continue
 		}
+		count += CountElements(element)
 	}
 	return count
 }
 
+// Parse and cunstruct a tree map of urls from main node
 func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int) {
-	var links, _ = GetLinksWithAdapter(AdapterResolver{}.GetAdapter(node.Value))
-
+	fmt.Print(".") // Simple output indicator of progress
+	links, _ := GetLinksWithAdapter(AdapterResolver{}.GetAdapter(node.Value))
 	curDepth++
 	if curDepth > limitDepth {
 		return
 	}
-	for idx, link := range links {
-		if limitWidth <= idx {
-			break
-		}
-		// Add new link child to node
-		node.Children = append(node.Children, Link{link, curDepth, idx, nil})
 
-		if curDepth > limitDepth {
-			fmt.Println("bleat")
-		}
+	// It's important to define our cap of node children to prevent 're-referencing' later
+	if len(links) <= limitWidth+1 {
+		node.Children = make([]Link, len(links))
+	} else {
+		links = links[:limitWidth] // If links count is more than our limit - cut extra off
+		node.Children = make([]Link, limitWidth)
+	}
+
+	// Append our links to the node
+	for idx, link := range links {
+		node.Children[idx] = Link{link, curDepth, idx, nil}
 		ConstructLinksTreeForNode(&node.Children[idx], limitWidth, limitDepth, curDepth)
 	}
 }
 
-// Retrieves all the links via a SchemaAdapter
+// Retrieve all the links via a SchemaAdapter
 func GetLinksWithAdapter(adapter SchemaAdapter) ([]string, error) {
 	var newLinks []string
 	body, err := adapter.Content()
@@ -177,7 +180,5 @@ func GetLinksWithAdapter(adapter SchemaAdapter) ([]string, error) {
 		return newLinks, err
 	}
 
-	parser := SimpleParser{body}
-
-	return parser.ParseLinks(adapter.GetBasePath(), false)
+	return SimpleParser{body}.ParseLinks(adapter.GetBasePath(), false)
 }
