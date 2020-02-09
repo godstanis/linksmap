@@ -2,7 +2,6 @@ package parser
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -27,11 +26,12 @@ func check(e error) {
 func ConstructTreeForUrl(url string, maxWidth int, maxDepth int) (Link, error) {
 	var baseNode = Link{url, 0, 0, nil}
 
-	fmt.Println("Generating links map for '" + url + "', it can take some time...")
+	log.Println("Generating links map for '" + url + "', it can take some time...")
 
 	var wg sync.WaitGroup
 	err := ConstructLinksTreeForNode(&baseNode, maxWidth, maxDepth, 0, &wg)
 	wg.Wait()
+	log.Println("Links map for '" + url + "' is ready...")
 	return baseNode, err
 }
 
@@ -63,7 +63,6 @@ func CountElements(node Link) int {
 
 // Parse and cunstruct a tree map of urls from main node
 func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int, wg *sync.WaitGroup) error {
-	fmt.Print(".") // Simple output indicator of progress
 	links, err := GetLinksWithAdapter(AdapterResolver{}.GetAdapter(node.Value))
 
 	curDepth++
