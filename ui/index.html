@@ -67,26 +67,26 @@
 </body>
 <script>
 $("#links-json-form").submit(function(event){
-	event.preventDefault(); //prevent default action 
+    event.preventDefault(); //prevent default action 
 
     $("#output").fadeOut()
     $(".spinner").show()
     $(".btn-submit").attr("disabled", true);
 
-	var post_url = $(this).attr("action"); //get form action url
-	var request_method = $(this).attr("method"); //get form GET/POST method
-	var form_data = $(this).serialize(); //Encode form elements for submission
-	
-	$.ajax({
-		url : post_url,
-		type: request_method,
-		data : form_data
-	}).done(function(response){
+    var post_url = $(this).attr("action"); //get form action url
+    var request_method = $(this).attr("method"); //get form GET/POST method
+    var form_data = $(this).serialize(); //Encode form elements for submission
+    
+    $.ajax({
+        url : post_url,
+        type: request_method,
+        data : form_data
+    }).done(function(response){
         document.getElementById("output").innerHTML = JSON.stringify(response, null, 2)
         $("#output").fadeIn()
         $(".spinner").hide()
         $(".btn-submit").attr("disabled", false);
-	}).fail(function(response){
+    }).fail(function(response){
         document.getElementById("output").innerHTML = "Error occured!"
         alert('error');
     });
