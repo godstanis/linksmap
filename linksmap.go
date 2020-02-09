@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"linksmap/pkg/parser"
 	"log"
 	"net/http"
@@ -10,6 +9,7 @@ import (
 
 func main() {
 	http.HandleFunc("/", handler)
+	log.Println("Server is listening on :8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
@@ -19,7 +19,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseMultipartForm(1000)
 		var tree parser.Link
-		fmt.Println(r.Form.Get("url"))
 		if r.Form.Get("url") != "" {
 			tree, _ = parser.ConstructTreeForUrl(r.Form.Get("url"), 4, 4)
 		}
