@@ -17,9 +17,13 @@
     </style>
 </head>
 <body class="bg-light">
-    <nav class="navbar navbar-dark bg-dark sticky-top shadow-sm">
+    <nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
         <div class="container">
-            <span class="navbar-brand">Links Mapper</span>
+            <span class="navbar-brand">
+                Links Mapper
+                <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
+                <img alt="GitHub" src="https://img.shields.io/github/license/godstanis/linksmap">
+            </span>
         <ul class="nav nav-pills nav-socials">
             <li class="nav-item mr-2">
                 <a href="https://github.com/godstanis/linksmap" target="_blank">
@@ -33,11 +37,13 @@
             </li>
         </ul>
         </div>
-        
     </nav>
     <div class="container mt-3">
+        <div class="alert alert-warning">
+            This is still <b>work in progress</b>.
+        </div>
         <div class="jumbotron p-4 mb-3">
-            <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just enter your favourite website and press generate button, you will see all it's connection with the world!!!</p>
+            <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just enter your favourite website and press generate button, you will see all it's connections with the world!!!</p>
         </div>
         <div class="col-md-8 p-0">
             <form action="" method="post" id="links-json-form">
