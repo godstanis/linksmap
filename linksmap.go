@@ -19,13 +19,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		r.ParseMultipartForm(1000)
 		var tree parser.Link
-		var err error
 		fmt.Println(r.Form.Get("url"))
 		if r.Form.Get("url") != "" {
 			tree, _ = parser.ConstructTreeForUrl(r.Form.Get("url"), 4, 4)
 		}
-
-		fmt.Println(err)
 
 		var json, _ = json.MarshalIndent(tree, "", "    ")
 		w.Write(json)
