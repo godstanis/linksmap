@@ -56,13 +56,14 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <pre id="output" class="bg-white"></pre>
+        <pre id="output" class="bg-white text-dark rounded-lg p-3" style="display: none;"></pre>
     </div>
 </body>
 <script>
 $("#links-json-form").submit(function(event){
 	event.preventDefault(); //prevent default action 
 
+    $("#output").fadeOut()
     $(".spinner").show()
     $(".btn-submit").attr("disabled", true);
 
@@ -76,6 +77,7 @@ $("#links-json-form").submit(function(event){
 		data : form_data
 	}).done(function(response){
         document.getElementById("output").innerHTML = JSON.stringify(response, null, 2)
+        $("#output").fadeIn()
         $(".spinner").hide()
         $(".btn-submit").attr("disabled", false);
 	}).fail(function(response){
