@@ -1,24 +1,35 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"linksmap/pkg/parser"
+	"log"
+	"net/http"
 )
 
-type Link struct {
-	Value    string `json:"value"`
-	Depth    int    `json:"tree_level"`
-	Width    int    `json:"tree_width"`
-	Children []Link `json:"children"`
+func main() {
+	http.HandleFunc("/", handler)
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
-func main() {
-	var url = "https://www.google.ru/"
-	// var url = "/home/garstas/Development/html/urlmap_test/index.html"
+func handler(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		w.Header().Set("Content-Type", "application/json")
 
-	var tree = parser.ConstructTreeForUrl(url, 4, 4)
+		r.ParseMultipartForm(1000)
+		var tree parser.Link
+		var err error
+		fmt.Println(r.Form.Get("url"))
+		if r.Form.Get("url") != "" {
+			tree, _ = parser.ConstructTreeForUrl(r.Form.Get("url"), 4, 4)
+		}
 
-	parser.DropTreeToJsonFile(tree)
-	fmt.Printf("\nElements: %d", parser.CountElements(tree))
-	fmt.Println("\nFile has been generated. Have fun! :-D")
+		fmt.Println(err)
+
+		var json, _ = json.MarshalIndent(tree, "", "    ")
+		w.Write(json)
+		return
+	}
+	http.ServeFile(w, r, "./ui/index.html") // serve static index.html
 }

@@ -39,7 +39,8 @@ func (Adapter FileSchemaAdapter) GetBasePath() string {
 func (Adapter FileSchemaAdapter) Content() (string, error) {
 	body, err := ioutil.ReadFile(Adapter.GetPath())
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 	return string(body), err
 }
@@ -58,11 +59,16 @@ func (Adapter HttpSchemaAdapter) Content() (string, error) {
 	client := http.Client{Timeout: 15 * time.Second}
 	response, err := client.Get(Adapter.Path)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return "", err
 	}
 	defer response.Body.Close()
 
 	body, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		log.Println(err)
+	}
 
 	return string(body), err
 }

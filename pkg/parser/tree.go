@@ -24,15 +24,15 @@ func check(e error) {
 }
 
 // Generates tree of links for url with boundaries
-func ConstructTreeForUrl(url string, maxWidth int, maxDepth int) Link {
+func ConstructTreeForUrl(url string, maxWidth int, maxDepth int) (Link, error) {
 	var baseNode = Link{url, 0, 0, nil}
 
 	fmt.Println("Generating links map for '" + url + "', it can take some time...")
 
 	var wg sync.WaitGroup
-	ConstructLinksTreeForNode(&baseNode, maxWidth, maxDepth, 0, &wg)
+	err := ConstructLinksTreeForNode(&baseNode, maxWidth, maxDepth, 0, &wg)
 	wg.Wait()
-	return baseNode
+	return baseNode, err
 }
 
 // Writes json representation of a tree to a file
@@ -62,12 +62,13 @@ func CountElements(node Link) int {
 }
 
 // Parse and cunstruct a tree map of urls from main node
-func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int, wg *sync.WaitGroup) {
+func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int, wg *sync.WaitGroup) error {
 	fmt.Print(".") // Simple output indicator of progress
-	links, _ := GetLinksWithAdapter(AdapterResolver{}.GetAdapter(node.Value))
+	links, err := GetLinksWithAdapter(AdapterResolver{}.GetAdapter(node.Value))
+
 	curDepth++
 	if curDepth > limitDepth {
-		return
+		return nil
 	}
 
 	// It's important to define our cap of node children to prevent 're-referencing' later
@@ -87,6 +88,7 @@ func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDe
 			wg.Done()
 		}(idx)
 	}
+	return err
 }
 
 // Retrieve all the links via a SchemaAdapter
@@ -94,7 +96,6 @@ func GetLinksWithAdapter(adapter SchemaAdapter) ([]string, error) {
 	var newLinks []string
 	body, err := adapter.Content()
 	if err != nil {
-		log.Fatal(err)
 		return newLinks, err
 	}
 

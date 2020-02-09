@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Links mapper</title>
+</head>
+<body>
+    <h1>Links Mapper</h1>
+    <form action="" method="post" id="links-json-form">
+        <input type="text" name="url" placeholder="Enter site url">
+        <button type="submit">Generate map!</button>
+    </form>
+    <hr>
+    <pre id="output">[map here]</pre>
+</body>
+<script>
+window.addEventListener( "load", function () {
+    function sendData(form) {
+        document.getElementById("output").innerHTML = "Loading... Please wait..."
+        const xhr = new XMLHttpRequest();
+        
+        // Define what happens on successful data submission
+        xhr.addEventListener("load", function(event) {
+            console.log(event.target.responseText);
+            document.getElementById("output").innerHTML = event.target.responseText
+        });
+        // Define what happens in case of error
+        xhr.addEventListener("error", function(event) {
+            alert('Oops! Something went wrong.');
+        });
+        
+        const FD = new FormData(form);
+        xhr.open("POST", form.action);
+        xhr.send(FD);
+    }
+    
+    // Access the form element...
+    let form = document.getElementById("links-json-form");
+    // ...and take over its submit event.
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        sendData(form);
+    });
+});
+</script>
+</html>
