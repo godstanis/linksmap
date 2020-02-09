@@ -4,43 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Links mapper</title>
+    <!-- Bootstrap components -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <!-- Custom styles -->
+    <style>
+        .nav-socials img {
+            height: 25px
+        }
+    </style>
 </head>
-<body>
-    <h1>Links Mapper</h1>
-    <form action="" method="post" id="links-json-form">
-        <input type="text" name="url" placeholder="Enter site url">
-        <button type="submit">Generate map!</button>
-    </form>
-    <hr>
-    <pre id="output">[map here]</pre>
+<body class="bg-light">
+    <nav class="navbar navbar-dark bg-dark sticky-top shadow-sm">
+        <div class="container">
+            <span class="navbar-brand">Links Mapper</span>
+        <ul class="nav nav-pills nav-socials">
+            <li class="nav-item mr-2">
+                <a href="https://github.com/godstanis/linksmap" target="_blank">
+                    <img alt="GitHub stars" src="https://img.shields.io/github/stars/godstanis/linksmap?style=social">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://github.com/godstanis" target="_blank">
+                    <img alt="GitHub followers" src="https://img.shields.io/github/followers/godstanis?label=Follow%20me%20on%20Github&style=social">
+                </a>
+            </li>
+        </ul>
+        </div>
+        
+    </nav>
+    <div class="container mt-3">
+        <div class="jumbotron p-4 mb-3">
+            <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just enter your favourite website and press generate button, you will see all it's connection with the world!!!</p>
+        </div>
+        <div class="col-md-8 p-0">
+            <form action="" method="post" id="links-json-form">
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name="url" placeholder="http://example.com">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary btn-submit" type="submit">
+                            Generate!
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="text-center spinner" style="display: none;">
+            <div class="spinner-border text-secondary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <pre id="output" class="bg-white"></pre>
+    </div>
 </body>
 <script>
-window.addEventListener( "load", function () {
-    function sendData(form) {
-        document.getElementById("output").innerHTML = "Loading... Please wait..."
-        const xhr = new XMLHttpRequest();
-        
-        // Define what happens on successful data submission
-        xhr.addEventListener("load", function(event) {
-            console.log(event.target.responseText);
-            document.getElementById("output").innerHTML = event.target.responseText
-        });
-        // Define what happens in case of error
-        xhr.addEventListener("error", function(event) {
-            alert('Oops! Something went wrong.');
-        });
-        
-        const FD = new FormData(form);
-        xhr.open("POST", form.action);
-        xhr.send(FD);
-    }
-    
-    // Access the form element...
-    let form = document.getElementById("links-json-form");
-    // ...and take over its submit event.
-    form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        sendData(form);
+$("#links-json-form").submit(function(event){
+	event.preventDefault(); //prevent default action 
+
+    $(".spinner").show()
+    $(".btn-submit").attr("disabled", true);
+
+	var post_url = $(this).attr("action"); //get form action url
+	var request_method = $(this).attr("method"); //get form GET/POST method
+	var form_data = $(this).serialize(); //Encode form elements for submission
+	
+	$.ajax({
+		url : post_url,
+		type: request_method,
+		data : form_data
+	}).done(function(response){
+        document.getElementById("output").innerHTML = JSON.stringify(response, null, 2)
+        $(".spinner").hide()
+        $(".btn-submit").attr("disabled", false);
+	}).fail(function(response){
+        document.getElementById("output").innerHTML = "Error occured!"
+        alert('error');
     });
 });
 </script>
