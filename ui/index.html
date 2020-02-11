@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Links mapper</title>
     <!-- Bootstrap components -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-    <!-- Custom styles -->
-    <style>
-        .nav-socials img {
-            height: 25px
-        }
-    </style>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <!-- Vis.js -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network@7.3.4/standalone/umd/vis-network.min.js"></script>
 </head>
+
 <body class="bg-light">
     <nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
         <div class="container">
@@ -24,18 +28,20 @@
                 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
                 <img alt="GitHub" src="https://img.shields.io/github/license/godstanis/linksmap">
             </span>
-        <ul class="nav nav-pills nav-socials">
-            <li class="nav-item mr-2">
-                <a href="https://github.com/godstanis/linksmap" target="_blank">
-                    <img alt="GitHub stars" src="https://img.shields.io/github/stars/godstanis/linksmap?style=social">
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="https://github.com/godstanis" target="_blank">
-                    <img alt="GitHub followers" src="https://img.shields.io/github/followers/godstanis?label=Follow%20me%20on%20Github&style=social">
-                </a>
-            </li>
-        </ul>
+            <ul class="nav nav-pills nav-socials">
+                <li class="nav-item mr-2">
+                    <a href="https://github.com/godstanis/linksmap" target="_blank">
+                        <img alt="GitHub stars"
+                            src="https://img.shields.io/github/stars/godstanis/linksmap?style=social">
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://github.com/godstanis" target="_blank">
+                        <img alt="GitHub followers"
+                            src="https://img.shields.io/github/followers/godstanis?label=Follow%20me%20on%20Github&style=social">
+                    </a>
+                </li>
+            </ul>
         </div>
     </nav>
     <div class="container mt-3">
@@ -43,12 +49,15 @@
             This is still <b>work in progress</b>.
         </div>
         <div class="jumbotron p-4 mb-3">
-            <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just enter your favourite website and press generate button, you will see all it's connections with the world!!!</p>
+            <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just
+                enter your favourite website and press generate button, you will see all it's connections with the
+                world!!!</p>
         </div>
         <div class="col-md-8 p-0">
             <form action="" method="post" id="links-json-form">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="url" placeholder="http://example.com">
+                    <input type="text" class="form-control" name="url"
+                        value="/home/garstas/Development/html/urlmap_test/index.html" placeholder="http://example.com">
                     <div class="input-group-append">
                         <button class="btn btn-primary btn-submit" type="submit">
                             Generate!
@@ -62,34 +71,128 @@
                 <span class="sr-only">Loading...</span>
             </div>
         </div>
-        <pre id="output" class="bg-white text-dark rounded-lg p-3" style="display: none;"></pre>
+        <div class="view-tabs" style="display: none;">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-toggle="collapse" data-target="#collapseDiagramView"
+                        aria-expanded="true" aria-controls="collapseDiagramView">Diagram</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-toggle="collapse" data-target="#collapseJsonView"
+                        aria-expanded="false" aria-controls="collapseJsonView">Json</a>
+                </li>
+            </ul>
+            <div class="accordion" id="accordionExample">
+                <div class="card">
+                    <div id="collapseDiagramView" class="collapse show" aria-labelledby="headingOne"
+                        data-parent="#accordionExample">
+                        <div class="card-body">
+                            <div class="text-center diagram-loading-spinner" style="display: none;">
+                                <div class="spinner-grow spinner-grow-sm text-primary" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                                <span class="text-secondary">Creating diagram, it can take a while if the network is
+                                    big...</span>
+                            </div>
+
+                            <div id="linksmap-vis-network" class="border" style="height: 600px;display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+
+                    <div id="collapseJsonView" class="collapse" aria-labelledby="headingTwo"
+                        data-parent="#accordionExample">
+                        <div class="card-body">
+                            <pre id="output" class="border bg-white text-dark rounded-lg p-3"></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </body>
-<script>
-$("#links-json-form").submit(function(event){
-    event.preventDefault(); //prevent default action 
+<script type="text/javascript">
+    /*
+    * Form handler
+    */
+    $("#links-json-form").submit(function (event) {
+        // Hides all previously outputted content
+        function hideOutputElements() {
+            $(".view-tabs").fadeOut()
+            $(".spinner").show()
+            $(".btn-submit").attr("disabled", true);
+        }
 
-    $("#output").fadeOut()
-    $(".spinner").show()
-    $(".btn-submit").attr("disabled", true);
+        // Shows all previously outputted content
+        function showOutputElements() {
+            $(".view-tabs").fadeIn()
+            $(".spinner").hide()
+            $(".btn-submit").attr("disabled", false);
+        }
 
-    var post_url = $(this).attr("action"); //get form action url
-    var request_method = $(this).attr("method"); //get form GET/POST method
-    var form_data = $(this).serialize(); //Encode form elements for submission
-    
-    $.ajax({
-        url : post_url,
-        type: request_method,
-        data : form_data
-    }).done(function(response){
-        document.getElementById("output").innerHTML = JSON.stringify(response, null, 2)
-        $("#output").fadeIn()
-        $(".spinner").hide()
-        $(".btn-submit").attr("disabled", false);
-    }).fail(function(response){
-        document.getElementById("output").innerHTML = "Error occured!"
-        alert('error');
+        event.preventDefault();
+        hideOutputElements();
+
+        $.ajax({
+            url: $(this).attr("action"), //get form action url
+            type: $(this).attr("method"), //get form GET/POST method
+            data: $(this).serialize() //Encode form elements for submission
+        }).done(function (response) {
+            document.getElementById("output").innerHTML = JSON.stringify(response, null, 2);
+            renderDiagram(response);
+            showOutputElements();
+        }).fail(function (response) {
+            document.getElementById("output").innerHTML = "Error occured!";
+            alert('error');
+        });
     });
-});
+
+    /*
+    * Renders vis.js network diagram using original tree-structured json data
+    */
+    function renderDiagram(json_node) {
+        $(".diagram-loading-spinner").fadeIn();
+        $("#linksmap-vis-network").fadeOut();
+
+        // create a network
+        var data = formatDataToVisCompatible(json_node);
+        var container = document.getElementById("linksmap-vis-network");
+        var options = {
+            layout: { improvedLayout: false },
+            physics: {
+                enabled: false,
+            }
+        };
+        var network = new vis.Network(container, data, options);
+        network.on("stabilizationIterationsDone", x => {
+            $(".diagram-loading-spinner").fadeOut();
+            $("#linksmap-vis-network").fadeIn();
+        })
+        network.stabilize(500);
+    }
+
+    // Formats tree json structure to nodes and adges (vis.js compatible format)
+    function formatDataToVisCompatible(json_node, output_params = { nodes: [], edges: [] }) {
+        output_params.nodes.push({
+            id: json_node.id,
+            label: json_node.value
+        });
+
+        if (json_node.children !== null) {
+            for (var i = 0; i <= json_node.children.length - 1; i++) {
+                output_params.edges.push({
+                    from: json_node.id,
+                    to: json_node.children[i].id
+                });
+                // `output_params` is a reference so we dont need any append logic here
+                formatDataToVisCompatible(json_node.children[i], output_params);
+            }
+        }
+        return output_params;
+    }
 </script>
+
 </html>
