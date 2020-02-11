@@ -89,7 +89,6 @@ func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDe
 	// Append our links to the node
 	for idx, link := range links {
 		wg.Add(1)
-		log.Println(*step)
 		*step++
 
 		node.Children[idx] = Link{link, *step, curDepth, idx, nil}
