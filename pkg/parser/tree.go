@@ -21,7 +21,7 @@ type LinkInfo struct {
 	Width      int    `json:"width"`       // Position of node in children slice (0 for each first node child)
 }
 
-// Generates tree of links for url with boundaries
+// ConstructTreeForUrl Generates tree of links for url with boundaries
 func ConstructTreeForUrl(url string, maxWidth int, maxDepth int) (Link, error) {
 	log.Println("Generating links map for '" + url + "'...")
 
@@ -37,7 +37,7 @@ func ConstructTreeForUrl(url string, maxWidth int, maxDepth int) (Link, error) {
 	return baseNode, err
 }
 
-// Parses and constructs a tree map of urls from main node
+// ConstructLinksTreeForNode Parses and constructs a tree map of urls from main node
 func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int, wg *sync.WaitGroup) error {
 	curDepth++
 	if curDepth >= limitDepth {

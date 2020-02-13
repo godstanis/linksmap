@@ -22,18 +22,18 @@ type HttpPage struct {
 	Path string
 }
 
-// Returns absolute path of a page
+// GetPath Returns absolute path of a page
 func (Adapter HttpPage) GetPath() string {
 	return Adapter.Path
 }
 
-// Returns base path of a page
+// GetBasePath Returns base path of a page
 func (Adapter HttpPage) GetBasePath() string {
 	parsedUrl, _ := url.Parse(Adapter.GetPath())
 	return parsedUrl.Host + "://" + parsedUrl.Hostname()
 }
 
-// Returns page content
+// GetContent Returns page content
 func (Adapter HttpPage) GetContent() (string, error) {
 	client := http.Client{Timeout: 15 * time.Second}
 	response, err := client.Get(Adapter.Path)
