@@ -1,28 +1,110 @@
+// Package parser parses websites and generates tree structures (i.e. maps) of their connections.
 package parser
 
 import (
-	"regexp"
+	"fmt"
+	"net/url"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
-type SimpleParser struct {
+// Simple parser to parse links from a website.
+type simpleParser struct {
 	String string
 }
 
-func (Parser SimpleParser) ParseLinks(basePath string, skipSameBase bool) ([]string, error) {
-	var newLinks []string
-	re := regexp.MustCompile(`(?m)<a\s+(?:[^>]*?\s+)?href="([^"]*)"`)
-	matches := re.FindAllStringSubmatch(string(Parser.String), -1)
-	for _, element := range matches {
-		// if it's relative link - prepend our base path to it
-		var relative = !strings.HasPrefix(element[1], basePath) && !strings.HasPrefix(element[1], "http")
-		if relative {
-			element[1] = basePath + element[1]
-		}
-		if skipSameBase && relative {
-			continue
-		}
-		newLinks = append(newLinks, element[1])
+// Parses links without any additional filters
+func (Parser simpleParser) ParseLinks() ([]string, error) {
+	emptyFilter := func(url string) bool {
+		return true
 	}
-	return newLinks, nil
+	emptyTransform := func(url string) string {
+		return url
+	}
+
+	return Parser.ParseLinksWithFilters(emptyFilter, emptyTransform, true)
+}
+
+// Parses links with user provided filter and transformer closure.
+//
+// filter: accepts currently found link as a parameter and returns boolean.
+// If the value returned by filter is false than this link will not be included in final result.
+//
+// transform: accepts currently found link as a parameter and returns transformed result.
+//
+// allowSameDomain: determines if same domain urls are included
+func (Parser simpleParser) ParseLinksWithFilters(filter func(url string) bool, transform func(url string) string, allowSameDomain bool) ([]string, error) {
+	parsedLinks := make(map[string][]string)
+
+	doc, err := html.Parse(strings.NewReader(Parser.String))
+	if err != nil {
+		return []string{}, err
+	}
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "a" {
+			for _, a := range n.Attr {
+				if a.Key == "href" {
+					if filter(a.Val) {
+						transformedLink := transform(a.Val)
+
+						hostname := baseUrl(transformedLink)
+
+						if _, ok := parsedLinks[hostname]; !ok {
+							parsedLinks[hostname] = []string{}
+						}
+						parsedLinks[hostname] = append(parsedLinks[hostname], transformedLink)
+					}
+					break
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(doc)
+
+	var resultLinks []string
+	// Transform map to slice
+	for _, links := range parsedLinks {
+		if !allowSameDomain {
+			resultLinks = append(resultLinks, links[0])
+		} else {
+			resultLinks = append(resultLinks, links...)
+		}
+	}
+	return resultLinks, nil
+}
+
+// Return base url for passed link
+func baseUrl(link string) string {
+	parsedUrl, err := url.Parse(link)
+	if err != nil {
+		fmt.Println(err)
+		return link
+	}
+	return parsedUrl.Hostname()
+}
+
+// Retrieve all the links via a Page
+func getLinksForPage(adapter Page) ([]string, error) {
+	var newLinks []string
+	body, err := adapter.GetContent()
+	if err != nil {
+		return newLinks, err
+	}
+
+	// Filter all related links off
+	urlFilter := func(link string) bool {
+		parsedUrl, err := url.Parse(link)
+		if err != nil {
+			fmt.Println(err)
+			return false
+		}
+		return parsedUrl.IsAbs()
+	}
+
+	return simpleParser{body}.ParseLinksWithFilters(urlFilter, func(link string) string { return link }, false)
 }

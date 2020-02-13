@@ -4,58 +4,37 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
+	"net/url"
 	"time"
 )
 
-type AdapterResolver struct{}
-
-func (Adapter AdapterResolver) GetAdapter(path string) SchemaAdapter {
-	if strings.HasPrefix(path, "http") {
-		return HttpSchemaAdapter{path}
-	}
-
-	return FileSchemaAdapter{path}
-}
-
-type SchemaAdapter interface {
-	Content() (string, error)
+// Page represents any parsable object (http page, file e.t.c.)
+//
+// Any page should provide ability to determine it's content by path
+type Page interface {
+	GetContent() (string, error)
 	GetPath() string
 	GetBasePath() string
 }
 
-type FileSchemaAdapter struct {
+// HttpPage represents web page with html content
+type HttpPage struct {
 	Path string
 }
 
-func (Adapter FileSchemaAdapter) GetPath() string {
+// Returns absolute path of a page
+func (Adapter HttpPage) GetPath() string {
 	return Adapter.Path
 }
-func (Adapter FileSchemaAdapter) GetBasePath() string {
-	split := strings.Split(Adapter.GetPath(), "/")
-	split = split[:len(split)-1]
-	return strings.Join(split, "/") + "/"
-}
-func (Adapter FileSchemaAdapter) Content() (string, error) {
-	body, err := ioutil.ReadFile(Adapter.GetPath())
-	if err != nil {
-		log.Println(err)
-		return "", err
-	}
-	return string(body), err
+
+// Returns base path of a page
+func (Adapter HttpPage) GetBasePath() string {
+	parsedUrl, _ := url.Parse(Adapter.GetPath())
+	return parsedUrl.Host + "://" + parsedUrl.Hostname()
 }
 
-type HttpSchemaAdapter struct {
-	Path string
-}
-
-func (Adapter HttpSchemaAdapter) GetPath() string {
-	return Adapter.Path
-}
-func (Adapter HttpSchemaAdapter) GetBasePath() string {
-	return Adapter.GetPath()
-}
-func (Adapter HttpSchemaAdapter) Content() (string, error) {
+// Returns page content
+func (Adapter HttpPage) GetContent() (string, error) {
 	client := http.Client{Timeout: 15 * time.Second}
 	response, err := client.Get(Adapter.Path)
 	if err != nil {

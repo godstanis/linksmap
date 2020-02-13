@@ -1,85 +1,56 @@
 package parser
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
-	"os"
 	"sync"
 )
 
+// Link represents a parsed site URL, it is a node,
+// children are links found on parent node's html page response.
 type Link struct {
-	Value    string `json:"value"`
-	Id       int    `json:"id"`
-	Depth    int    `json:"tree_level"`
-	Width    int    `json:"tree_width"`
-	Children []Link `json:"children"`
+	Value    string   `json:"value"`    // Full url
+	Info     LinkInfo `json:"info"`     // Additional information object
+	Children []Link   `json:"children"` // Slice of Links found on this link's url
 }
 
-func check(e error) {
-	if e != nil {
-		log.Fatal(e)
-		panic(e)
-	}
+// LinkInfo represents some additional information regarding link (it's position, index and so on)
+type LinkInfo struct {
+	Id         int    `json:"id"`          // Unique id for the node in a tree
+	ShortValue string `json:"value_short"` // Shorthand value/name
+	Depth      int    `json:"depth"`       // Depth of the node in a tree
+	Width      int    `json:"width"`       // Position of node in children slice (0 for each first node child)
 }
 
 // Generates tree of links for url with boundaries
 func ConstructTreeForUrl(url string, maxWidth int, maxDepth int) (Link, error) {
-	var baseNode = Link{url, 0, 0, 0, nil}
+	log.Println("Generating links map for '" + url + "'...")
 
-	log.Println("Generating links map for '" + url + "', it can take some time...")
+	var baseNode = Link{url, LinkInfo{ShortValue: url}, nil}
 
 	var wg sync.WaitGroup
-	var step int // Will use reference for cheap 'loose' indexing of tree elements
-	err := ConstructLinksTreeForNode(&baseNode, maxWidth, maxDepth, 0, &wg, &step)
+	err := ConstructLinksTreeForNode(&baseNode, maxWidth, maxDepth, 0, &wg)
 	wg.Wait()
+	// Populating our tree with additional data before returning
+	populateTreeInfo(&baseNode, 0)
 
-	log.Printf("\n Elements in tree: %d\n", CountElements(baseNode))
-
-	log.Println("Links map for '" + url + "' is ready...")
+	log.Printf("\nTree for %s is generated.\n Elements count: %d\n", url, countElementsInTree(baseNode))
 	return baseNode, err
 }
 
-// Writes json representation of a tree to a file
-func DropTreeToJsonFile(tree Link) {
-	b, err := json.MarshalIndent(tree, "", "  ")
-	check(err)
-
-	dir, err := os.Getwd()
-	check(err)
-
-	err = ioutil.WriteFile(dir+"/linksMap.json", b, 0644)
-	check(err)
-}
-
-// Count all elements in tree recursively
-func CountElements(node Link) int {
-	var count = 1 // 1 is the firs one
-	for _, element := range node.Children {
-		if element.Children == nil {
-			// Leaf
-			count++
-			continue
-		}
-		count += CountElements(element)
-	}
-	return count
-}
-
-// Parse and cunstruct a tree map of urls from main node
-func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int, wg *sync.WaitGroup, step *int) error {
+// Parses and constructs a tree map of urls from main node
+func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDepth int, wg *sync.WaitGroup) error {
 	curDepth++
-	if curDepth > limitDepth {
+	if curDepth >= limitDepth {
 		return nil
 	}
 
-	links, err := GetLinksWithAdapter(AdapterResolver{}.GetAdapter(node.Value))
+	links, err := getLinksForPage(HttpPage{node.Value})
 	if err != nil || len(links) == 0 {
 		return err
 	}
 
 	// It's important to define our cap of node children to prevent 're-referencing' later
-	if len(links) <= limitWidth+1 {
+	if len(links) < limitWidth {
 		node.Children = make([]Link, len(links))
 	} else {
 		links = links[:limitWidth] // If links count is more than our limit - cut extra off
@@ -89,25 +60,41 @@ func ConstructLinksTreeForNode(node *Link, limitWidth int, limitDepth int, curDe
 	// Append our links to the node
 	for idx, link := range links {
 		wg.Add(1)
-		*step++
 
-		node.Children[idx] = Link{link, *step, curDepth, idx, nil}
+		node.Children[idx] = Link{
+			link,
+			LinkInfo{Depth: curDepth, Width: idx},
+			nil,
+		}
 
 		go func(idx int) {
-			ConstructLinksTreeForNode(&node.Children[idx], limitWidth, limitDepth, curDepth, wg, step)
+			_ = ConstructLinksTreeForNode(&node.Children[idx], limitWidth, limitDepth, curDepth, wg)
 			wg.Done()
 		}(idx)
 	}
 	return nil
 }
 
-// Retrieve all the links via a SchemaAdapter
-func GetLinksWithAdapter(adapter SchemaAdapter) ([]string, error) {
-	var newLinks []string
-	body, err := adapter.Content()
-	if err != nil {
-		return newLinks, err
+// Set unique indexes to each node and update additional information
+func populateTreeInfo(node *Link, index int) int {
+	node.Info.Id = index
+	node.Info.ShortValue = baseUrl(node.Value)
+	index++
+	for idx := range node.Children {
+		index = populateTreeInfo(&node.Children[idx], index)
 	}
+	return index
+}
 
-	return SimpleParser{String: body}.ParseLinks(adapter.GetBasePath(), false)
+// Count all elements in tree recursively
+func countElementsInTree(node Link) int {
+	var count = 1 // 1 is the firs one
+	for _, element := range node.Children {
+		if element.Children == nil {
+			count++
+			continue
+		}
+		count += countElementsInTree(element)
+	}
+	return count
 }

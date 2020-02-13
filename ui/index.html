@@ -7,192 +7,262 @@
     <title>Links mapper</title>
     <!-- Bootstrap components -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
     <!-- Vis.js -->
     <script type="text/javascript" src="https://unpkg.com/vis-network@7.3.4/standalone/umd/vis-network.min.js"></script>
 </head>
 
 <body class="bg-light">
-    <nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
-        <div class="container">
-            <span class="navbar-brand">
-                Links Mapper
-                <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
-                <img alt="GitHub" src="https://img.shields.io/github/license/godstanis/linksmap">
-            </span>
-            <ul class="nav nav-pills nav-socials">
-                <li class="nav-item mr-2">
-                    <a href="https://github.com/godstanis/linksmap" target="_blank">
-                        <img alt="GitHub stars"
-                            src="https://img.shields.io/github/stars/godstanis/linksmap?style=social">
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="https://github.com/godstanis" target="_blank">
-                        <img alt="GitHub followers"
-                            src="https://img.shields.io/github/followers/godstanis?label=Follow%20me%20on%20Github&style=social">
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <div class="container mt-3">
-        <div class="alert alert-warning">
-            This is still <b>work in progress</b>.
-        </div>
-        <div class="jumbotron p-4 mb-3">
-            <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just
-                enter your favourite website and press generate button, you will see all it's connections with the
-                world!!!</p>
-        </div>
-        <div class="col-md-8 p-0">
-            <form action="" method="post" id="links-json-form">
-                <div class="input-group mb-3">
-                    <input type="text" class="form-control" name="url"
-                        value="" placeholder="http://example.com">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary btn-submit" type="submit">
-                            Generate!
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-        <div class="text-center spinner" style="display: none;">
-            <div class="spinner-border text-secondary" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>
-        <div class="view-tabs" style="display: none;">
-            <ul class="nav nav-tabs">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" data-toggle="collapse" data-target="#collapseDiagramView"
-                        aria-expanded="true" aria-controls="collapseDiagramView">Diagram</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="#" data-toggle="collapse" data-target="#collapseJsonView"
-                        aria-expanded="false" aria-controls="collapseJsonView">Json</a>
-                </li>
-            </ul>
-            <div class="accordion" id="accordionExample">
-                <div class="card">
-                    <div id="collapseDiagramView" class="collapse show" aria-labelledby="headingOne"
-                        data-parent="#accordionExample">
-                        <div class="card-body">
-                            <div class="text-center diagram-loading-spinner" style="display: none;">
-                                <div class="spinner-grow spinner-grow-sm text-primary" role="status">
-                                    <span class="sr-only">Loading...</span>
-                                </div>
-                                <span class="text-secondary">Creating diagram, it can take a while if the network is
-                                    big...</span>
-                            </div>
-
-                            <div id="linksmap-vis-network" class="border" style="height: 600px;display: none;"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-
-                    <div id="collapseJsonView" class="collapse" aria-labelledby="headingTwo"
-                        data-parent="#accordionExample">
-                        <div class="card-body">
-                            <pre id="output" class="border bg-white text-dark rounded-lg p-3"></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+<nav class="navbar navbar-dark bg-primary sticky-top shadow-sm">
+    <div class="container float-left">
+        <span class="navbar-brand">
+            Links Mapper
+        </span>
+        <span class="nav-item mr-auto mt-2 mt-lg-0">
+            <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
+            <img alt="GitHub" src="https://img.shields.io/github/license/godstanis/linksmap">
+        </span>
+        <ul class="nav nav-pills nav-socials">
+            <li class="nav-item mr-2">
+                <a href="https://github.com/godstanis/linksmap" target="_blank">
+                    <img alt="GitHub stars"
+                         src="https://img.shields.io/github/stars/godstanis/linksmap?style=social">
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="https://github.com/godstanis" target="_blank">
+                    <img alt="GitHub followers"
+                         src="https://img.shields.io/github/followers/godstanis?label=Follow%20me%20on%20Github&style=social">
+                </a>
+            </li>
+        </ul>
     </div>
+</nav>
+<div class="container mt-3 mb-3">
+    <div class="jumbotron p-4 mb-3">
+        <p class="lead">Here, you can generate tree-like json structures of website connections (on-page urls). Just
+            enter your favourite website and press generate button, you will see all it's connections with the
+            world!</p>
+    </div>
+    <div class="col-md-8 p-0">
+        <form action="" method="post" id="links-json-form">
+            <div class="input-group mb-4">
+                <input type="url" class="form-control" name="url" value="" placeholder="http://example.com" required>
+                <div class="input-group-append">
+                    <button class="btn btn-primary btn-submit" type="submit">
+                        Generate!
+                    </button>
+                </div>
+            </div>
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Depth:</span>
+                </div>
+                <select class="custom-select network-size-select form-control" name="depth">
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4" selected>4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Width:</span>
+                </div>
+                <select class="custom-select network-size-select form-control" name="width">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+            <div class="alert alert-warning mb-0" id="performance-alert" role="alert" style="display: none;">
+                More than 500 nodes can take some significant time to generate and increase your CPU usage!
+            </div>
+            <div class="mb-3"></div>
+        </form>
+    </div>
+    <hr>
+    <div class="text-center spinner p-5" style="display: none;">
+        <div class="spinner-border text-secondary mr-2" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <span class="text-secondary">Generating tree of links and connections...</span>
+    </div>
+    <div class="view-tabs" style="display: none;">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#" data-toggle="collapse" data-target="#collapseDiagramView"
+                   aria-expanded="true" aria-controls="collapseDiagramView">Diagram</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="#" data-toggle="collapse" data-target="#collapseJsonView"
+                   aria-expanded="false" aria-controls="collapseJsonView">Json</a>
+            </li>
+        </ul>
+        <div class="accordion" id="accordionExample">
+            <div class="card">
+                <div id="collapseDiagramView" class="collapse show" aria-labelledby="headingOne"
+                     data-parent="#accordionExample">
+                    <div class="card-body">
+                        <div class="text-center diagram-loading-spinner p-4" style="display: none;">
+                            <div class="spinner-grow spinner-grow-sm text-primary" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <span class="text-secondary">Creating diagram with <span class="nodes-counter">0</span> nodes, it can take a while for big networks to render...</span>
+                        </div>
+                        <div id="network-diagram-block">
+                            <div id="linksmap-vis-network" class="border" style="height: 600px;display: none;"></div>
+                            <p id="linksmap-vis-creds" class="text-right text-secondary" style="display: none;">Powered
+                                by
+                                <a href="https://visjs.org/">Vis.js</a></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+
+                <div id="collapseJsonView" class="collapse" aria-labelledby="headingTwo"
+                     data-parent="#accordionExample">
+                    <div class="card-body">
+                        <pre id="output" class="border bg-white text-dark rounded-lg p-3"></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 <script type="text/javascript">
-    /*
-    * Form handler
-    */
-    $("#links-json-form").submit(function (event) {
-        // Hides all previously outputted content
-        function hideOutputElements() {
-            $(".view-tabs").fadeOut()
-            $(".spinner").show()
-            $(".btn-submit").attr("disabled", true);
-        }
+  /*
+  * Form handler
+  */
+  $("#links-json-form").submit(function (event) {
+    // Hides all previously outputted content
+    function hideOutputElements() {
+      $(".view-tabs").fadeOut();
+      $(".spinner").show();
+      $(".btn-submit").attr("disabled", true);
+    }
 
-        // Shows all previously outputted content
-        function showOutputElements() {
-            $(".view-tabs").fadeIn()
-            $(".spinner").hide()
-            $(".btn-submit").attr("disabled", false);
-        }
+    // Shows all previously outputted content
+    function showOutputElements() {
+      $(".view-tabs").fadeIn();
+      $(".spinner").hide();
+      $(".btn-submit").attr("disabled", false);
+    }
 
-        event.preventDefault();
-        hideOutputElements();
+    event.preventDefault();
+    hideOutputElements();
 
-        $.ajax({
-            url: $(this).attr("action"), //get form action url
-            type: $(this).attr("method"), //get form GET/POST method
-            data: $(this).serialize() //Encode form elements for submission
-        }).done(function (response) {
-            document.getElementById("output").innerHTML = JSON.stringify(response, null, 2);
-            renderDiagram(response);
-            showOutputElements();
-        }).fail(function (response) {
-            document.getElementById("output").innerHTML = "Error occured!";
-            alert('error');
-        });
+    $.ajax({
+      url: $(this).attr("action"), //get form action url
+      type: $(this).attr("method"), //get form GET/POST method
+      data: $(this).serialize() //Encode form elements for submission
+    }).done(function (response) {
+      document.getElementById("output").innerHTML = JSON.stringify(response, null, 2);
+      renderDiagram(response);
+      showOutputElements();
+    }).fail(function (response) {
+      document.getElementById("output").innerHTML = "Error occurred!";
+      alert('error');
+      showOutputElements();
+    });
+  });
+
+  $(".network-size-select").change(() => {
+    let width = parseInt($(".network-size-select[name=width]").val());
+    let depth = parseInt($(".network-size-select[name=depth]").val());
+    let assumedCount = (Math.pow(width, depth) - 1) / (width - 1);
+    console.log("Assumed max network count is: " + assumedCount);
+    let alert = $("#performance-alert");
+    if (assumedCount / 3 > 500) {
+      alert.show();
+      return
+    }
+    alert.hide();
+  });
+
+  /*
+  * Renders vis.js network diagram using original tree-structured json data
+  */
+  function renderDiagram(json_node) {
+    $(".diagram-loading-spinner").fadeIn();
+    $("#linksmap-vis-network").fadeOut();
+    $("#linksmap-vis-creds").fadeOut();
+
+    // create a network
+    let data = formatDataToVisCompatible(json_node);
+    console.log(data);
+    $(".nodes-counter").text(data.nodes.length);
+    let container = document.getElementById("linksmap-vis-network");
+    let options = {
+      layout: {improvedLayout: false},
+      physics: {
+        enabled: false,
+      },
+      nodes: {
+        shape: "dot",
+        margin: 10,
+        widthConstraint: {
+          maximum: 200
+        },
+        scaling: {
+          customScalingFunction: function (min, max, total, value) {
+            return 1 - 1 / (max / value);
+          },
+          label: {
+            min: 12,
+            max: 20
+          }
+        },
+        font: {
+          size: 20
+        },
+      },
+      edges: {
+        width: 2
+      }
+    };
+    let network = new vis.Network(container, data, options);
+    network.on("stabilizationIterationsDone", () => {
+      $(".diagram-loading-spinner").fadeOut();
+      $("#linksmap-vis-network").fadeIn();
+      $("#linksmap-vis-creds").fadeIn();
+      network.fit();
+    });
+    network.stabilize(1000);
+  }
+
+  // Formats tree json structure to nodes and edges (vis.js compatible format)
+  function formatDataToVisCompatible(json_node, output_params = {nodes: [], edges: []}) {
+    output_params.nodes.push({
+      id: json_node.info.id,
+      value: json_node.info.depth,
+      group: json_node.info.depth,
+      label: json_node.info.value_short,
+      title: json_node.value,
     });
 
-    /*
-    * Renders vis.js network diagram using original tree-structured json data
-    */
-    function renderDiagram(json_node) {
-        $(".diagram-loading-spinner").fadeIn();
-        $("#linksmap-vis-network").fadeOut();
-
-        // create a network
-        var data = formatDataToVisCompatible(json_node);
-        var container = document.getElementById("linksmap-vis-network");
-        var options = {
-            layout: { improvedLayout: false },
-            physics: {
-                enabled: false,
-            }
-        };
-        var network = new vis.Network(container, data, options);
-        network.on("stabilizationIterationsDone", x => {
-            $(".diagram-loading-spinner").fadeOut();
-            $("#linksmap-vis-network").fadeIn();
-        })
-        network.stabilize(500);
-    }
-
-    // Formats tree json structure to nodes and adges (vis.js compatible format)
-    function formatDataToVisCompatible(json_node, output_params = { nodes: [], edges: [] }) {
-        output_params.nodes.push({
-            id: json_node.id,
-            label: json_node.value
+    if (json_node.children !== null) {
+      for (let i = 0; i <= json_node.children.length - 1; i++) {
+        output_params.edges.push({
+          from: json_node.info.id,
+          to: json_node.children[i].info.id
         });
-
-        if (json_node.children !== null) {
-            for (var i = 0; i <= json_node.children.length - 1; i++) {
-                output_params.edges.push({
-                    from: json_node.id,
-                    to: json_node.children[i].id
-                });
-                // `output_params` is a reference so we dont need any append logic here
-                formatDataToVisCompatible(json_node.children[i], output_params);
-            }
-        }
-        return output_params;
+        // `output_params` is a reference so we dont need any append logic here
+        formatDataToVisCompatible(json_node.children[i], output_params);
+      }
     }
+    return output_params;
+  }
 </script>
 
 </html>
