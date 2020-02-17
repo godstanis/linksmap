@@ -1,6 +1,8 @@
-# Links Mapper
+# Links Mapper 
 
 > My first little golang project ever
+
+> Live demo to play around with: http://linksmap.stasb.ru/
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/godstanis/linksmap)](https://goreportcard.com/report/github.com/godstanis/linksmap)
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
