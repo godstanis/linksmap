@@ -5,6 +5,7 @@ services:
     ports:
       - "80:8080"
     working_dir: "/go/src/linksmap"
+    restart: always
     volumes:
       - .:/go/src/linksmap
     command: "bash -c 'go version && go get ./... && go run linksmap.go'"
