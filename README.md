@@ -1,6 +1,6 @@
 # Links Mapper 
 
-> My first little golang project ever
+> My first golang project
 
 > Live demo to play around with: http://linksmap.stasb.ru/
 
@@ -8,7 +8,7 @@
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
 <img alt="GitHub" src="https://img.shields.io/github/license/godstanis/linksmap">
 
-:bar_chart: Small web service for generating tree-like structures of a website connections
+:bar_chart: Small web service for generating tree-like structures of a website connections, built with concurrency in mind
 
 ![Application preview image](.github/screenshots/app-running-google-tree.png)
 

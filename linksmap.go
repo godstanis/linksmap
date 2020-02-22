@@ -2,12 +2,13 @@ package main
 
 import (
 	"encoding/json"
-	"linksmap/pkg/parser"
 	"log"
 	"net/http"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/godstanis/linksmap/pkg/parser"
 )
 
 func main() {

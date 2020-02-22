@@ -11,7 +11,7 @@ import (
 
 // Simple parser to parse links from a website.
 type simpleParser struct {
-	String string
+	Content string
 }
 
 // Parses links without any additional filters
@@ -37,7 +37,7 @@ func (Parser simpleParser) ParseLinks() ([]string, error) {
 func (Parser simpleParser) ParseLinksWithFilters(filter func(url string) bool, transform func(url string) string, allowSameDomain bool) ([]string, error) {
 	parsedLinks := make(map[string][]string)
 
-	doc, err := html.Parse(strings.NewReader(Parser.String))
+	doc, err := html.Parse(strings.NewReader(Parser.Content))
 	if err != nil {
 		return []string{}, err
 	}
@@ -81,19 +81,17 @@ func (Parser simpleParser) ParseLinksWithFilters(filter func(url string) bool, t
 // Return base url for passed link
 func baseUrl(link string) string {
 	parsedUrl, err := url.Parse(link)
-	if err != nil {
-		fmt.Println(err)
+	if err != nil || parsedUrl.Host == "" {
 		return link
 	}
 	return parsedUrl.Hostname()
 }
 
 // Retrieve all the links via a Page
-func getLinksForPage(adapter Page) ([]string, error) {
-	var newLinks []string
-	body, err := adapter.GetContent()
+func getLinksForPage(page Page) ([]string, error) {
+	body, err := page.GetContent()
 	if err != nil {
-		return newLinks, err
+		return []string{}, err
 	}
 
 	// Filter all related links off

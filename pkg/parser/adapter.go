@@ -8,6 +8,14 @@ import (
 	"time"
 )
 
+var (
+	Client *http.Client
+)
+
+func init() {
+	Client = &http.Client{Timeout: 15 * time.Second}
+}
+
 // Page represents any parsable object (http page, file e.t.c.)
 //
 // Any page should provide ability to determine it's content by path
@@ -29,14 +37,16 @@ func (Adapter HttpPage) GetPath() string {
 
 // GetBasePath Returns base path of a page
 func (Adapter HttpPage) GetBasePath() string {
-	parsedUrl, _ := url.Parse(Adapter.GetPath())
-	return parsedUrl.Host + "://" + parsedUrl.Hostname()
+	parsedUrl, err := url.Parse(Adapter.GetPath())
+	if err != nil || !parsedUrl.IsAbs() {
+		return Adapter.GetPath()
+	}
+	return parsedUrl.Scheme + "://" + parsedUrl.Hostname()
 }
 
 // GetContent Returns page content
 func (Adapter HttpPage) GetContent() (string, error) {
-	client := http.Client{Timeout: 15 * time.Second}
-	response, err := client.Get(Adapter.Path)
+	response, err := Client.Get(Adapter.Path)
 	if err != nil {
 		log.Println(err)
 		return "", err
