@@ -15,4 +15,5 @@ jobs:
         key: ${{ secrets.RR_KEY }}
         password: ${{ secrets.RR_PASSWORD }}
         passphrase: ${{ secrets.RR_PASSPHRASE }}
-        script: cd dc-apps/go/linksmap/;docker-compose down; git reset --hard; git pull; go get ./..; docker-compose up -d
+        script: ls
+#         script: cd dc-apps/go/linksmap/;docker-compose down; git reset --hard; git pull; go get ./..; docker-compose up -d
