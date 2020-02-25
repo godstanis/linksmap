@@ -1,0 +1,24 @@
+name: Deploy
+
+on: 
+  push:
+    branches: master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Updating and restarting the service on remote host
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.RR_HOST }}
+        username: ${{ secrets.RR_USERNAME }}
+        password: ${{ secrets.RR_PASSWORD }}
+        script: |
+          cd dc-apps/go/linksmap/
+          docker-compose down
+          git reset --hard
+          git pull
+          go get ./..
+          docker-compose up -d
