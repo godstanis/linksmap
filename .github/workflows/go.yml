@@ -32,7 +32,7 @@ jobs:
     - name: Ls
       run: ls
       
-    - run: mkdir ./artifacts; mkdir ./artifacts/ui; mv ./linksmap ./artifacts; mv ./ui ./artifacts/ui
+    - run: mkdir ./artifacts; mkdir ./artifacts/ui; mv ./linksmap ./artifacts; mv ./ui ./artifacts
       
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
