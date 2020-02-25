@@ -4,9 +4,10 @@
 
 > Live demo to play around with: http://linksmap.stasb.ru/
 
+[![Go action](https://github.com/godstanis/linksmap/workflows/Go/badge.svg)](https://github.com/godstanis/linksmap/actions?query=workflow%3AGo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/godstanis/linksmap)](https://goreportcard.com/report/github.com/godstanis/linksmap)
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/godstanis/linksmap">
-<img alt="GitHub" src="https://img.shields.io/github/license/godstanis/linksmap">
+![Last commit](https://img.shields.io/github/last-commit/godstanis/linksmap)
+![License](https://img.shields.io/github/license/godstanis/linksmap)
 
 :bar_chart: Small web service for generating tree-like structures of a website connections, built with concurrency in mind
 
