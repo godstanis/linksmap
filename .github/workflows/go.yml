@@ -24,27 +24,21 @@ jobs:
         fi
     
     - name: Tests
-#       if: success()
-      run: go test -v ./..
+      run: go test -v ./...
     
     - name: Build
-#       if: success()
       run: go build -v linksmap.go
       
     - name: Prepare build artifacts
-#       if: success()
       run: mkdir ./artifacts; mkdir ./artifacts/ui; mv ./linksmap ./artifacts; mv ./ui ./artifacts
       
     - name: Upload build artifact
-#       if: success()
       uses: actions/upload-artifact@v1.0.0
       with:
-        # Artifact name
         name: "build-${{runner.os}}"
-        # Directory containing files to upload
         path: ./artifacts
 
-#     - name: Update Go report card
-#       if: success()
-#       uses: creekorful/goreportcard-action@v1.0
+    - name: Update Go report card
+      if: success()
+      uses: creekorful/goreportcard-action@v1.0
       
