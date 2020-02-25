@@ -1,5 +1,8 @@
 name: GoTests
-on: [pull_request, push]
+on: 
+  push:
+    branches: master
+  pull_request:
 jobs:
 
   test:
