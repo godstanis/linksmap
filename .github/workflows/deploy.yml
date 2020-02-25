@@ -12,7 +12,11 @@ jobs:
       with:
         host: ${{ secrets.RR_HOST }}
         username: ${{ secrets.RR_USERNAME }}
-#         key: ${{ secrets.RR_KEY }}
         password: ${{ secrets.RR_PASSWORD }}
-        script: ls
-#         script: cd dc-apps/go/linksmap/;docker-compose down; git reset --hard; git pull; go get ./..; docker-compose up -d
+        script: |
+          cd dc-apps/go/linksmap/
+          docker-compose down
+          git reset --hard
+          git pull
+          go get ./..
+          docker-compose up -d
