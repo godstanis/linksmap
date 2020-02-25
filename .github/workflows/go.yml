@@ -36,6 +36,6 @@ jobs:
       uses: actions/upload-artifact@v1.0.0
       with:
         # Artifact name
-        name: "build"
+        name: "build-${{jobs.go.runs-on}}"
         # Directory containing files to upload
         path: ./linksmap
