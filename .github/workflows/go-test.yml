@@ -1,12 +1,12 @@
-name: Go
+name: GoTests
 on: 
   push:
-    branches:
-      - master
+    branches: master
+  pull_request:
 jobs:
 
-  build:
-    name: Build
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:      
     - name: Set up Go 1.13
@@ -26,17 +26,5 @@ jobs:
             dep ensure
         fi
 
-    - name: Build
-      run: go build -v linksmap.go
-
-    - name: Prepare build artifacts
-      run: mkdir ./artifacts; mkdir ./artifacts/ui; mv ./linksmap ./artifacts; mv ./ui ./artifacts
-
-    - name: Upload build artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        name: "build-${{runner.os}}"
-        path: ./artifacts
-
-    - name: Update Go report card
-      uses: creekorful/goreportcard-action@v1.0
+    - name: Tests
+      run: go test -v ./...
