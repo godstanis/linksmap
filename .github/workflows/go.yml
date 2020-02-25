@@ -26,9 +26,6 @@ jobs:
             dep ensure
         fi
 
-    - name: Tests
-      run: go test -v ./...
-
     - name: Build
       run: go build -v linksmap.go
 
