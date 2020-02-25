@@ -28,11 +28,14 @@ jobs:
     
     - name: Build
       run: go build -v linksmap.go
+    
+    - name: Ls
+      run: ls
       
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-        # Artifact name
-        name: "test-a"
-        # Directory containing files to upload
-        path: ./artifacts-test
+#     - name: Upload artifact
+#       uses: actions/upload-artifact@v1.0.0
+#       with:
+#         # Artifact name
+#         name: "test-a"
+#         # Directory containing files to upload
+#         path: ./artifacts-test
