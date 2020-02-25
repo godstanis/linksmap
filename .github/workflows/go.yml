@@ -32,10 +32,12 @@ jobs:
     - name: Ls
       run: ls
       
+    - run: mkdir ./artifacts; mkdir ./artifacts/ui; mv ./linksmap ./artifacts; mv ./ui ./artifacts/ui
+      
     - name: Upload artifact
       uses: actions/upload-artifact@v1.0.0
       with:
         # Artifact name
         name: "build-${{runner.os}}"
         # Directory containing files to upload
-        path: ./linksmap
+        path: ./artifacts
