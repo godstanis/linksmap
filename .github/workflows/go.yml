@@ -38,4 +38,4 @@ jobs:
         # Artifact name
         name: "build"
         # Directory containing files to upload
-        path: .
+        path: ./linksmap
