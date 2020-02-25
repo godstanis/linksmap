@@ -2,7 +2,8 @@
 
 > My first golang project
 
-> Live demo to play around with: http://linksmap.stasb.ru/
+> Live demo to play around with: [![Demo](https://img.shields.io/website?down_message=DOWN%3A%28&label=Live%20demo&up_message=UP&url=http%3A%2F%2Flinksmap.stasb.ru%2F)](http://linksmap.stasb.ru/)
+
 
 [![Go action](https://github.com/godstanis/linksmap/workflows/Go/badge.svg)](https://github.com/godstanis/linksmap/actions?query=workflow%3AGo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/godstanis/linksmap)](https://goreportcard.com/report/github.com/godstanis/linksmap)
