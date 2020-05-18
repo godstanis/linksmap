@@ -13,6 +13,8 @@ import (
 
 func main() {
 	http.HandleFunc("/", handler)
+	http.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("ui/assets/"))))
+
 	log.Println("Server is listening on :8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
@@ -23,11 +25,11 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
 		_ = r.ParseMultipartForm(1000)
-		pageUrl, width, depth := parseFormParameters(r.Form)
-		tree, _ := parser.ConstructTreeForUrl(pageUrl, width, depth)
+		pageURL, width, depth := parseFormParameters(r.Form)
+		tree, _ := parser.ConstructTreeForUrl(pageURL, width, depth)
 
-		var linksMapJson, _ = json.MarshalIndent(tree, "", "    ")
-		_, _ = w.Write(linksMapJson)
+		var linksMapJSON, _ = json.MarshalIndent(tree, "", "    ")
+		_, _ = w.Write(linksMapJSON)
 		return
 	}
 	http.ServeFile(w, r, "./ui/index.html") // serve static index.html
@@ -35,7 +37,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 // Parse required form parameters
 func parseFormParameters(form url.Values) (string, int, int) {
-	pageUrl := ""
+	pageURL := ""
 	maxWidth, _ := strconv.ParseInt(form.Get("width"), 10, 64)
 	maxDepth, _ := strconv.ParseInt(form.Get("depth"), 10, 64)
 
@@ -47,9 +49,9 @@ func parseFormParameters(form url.Values) (string, int, int) {
 		maxDepth = 2
 	}
 
-	if pageUrl = form.Get("url"); pageUrl != "" && !strings.HasPrefix(pageUrl, "http") {
-		pageUrl = "http://" + pageUrl
+	if pageURL = form.Get("url"); pageURL != "" && !strings.HasPrefix(pageURL, "http") {
+		pageURL = "http://" + pageURL
 	}
 
-	return pageUrl, int(maxWidth), int(maxDepth)
+	return pageURL, int(maxWidth), int(maxDepth)
 }
