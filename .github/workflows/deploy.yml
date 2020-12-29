@@ -20,5 +20,5 @@ jobs:
           docker-compose down
           git reset --hard
           git pull
-          go get ./..
+          go get ./...
           docker-compose up -d
