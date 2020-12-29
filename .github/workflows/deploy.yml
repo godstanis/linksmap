@@ -10,7 +10,7 @@ jobs:
     
     steps:
     - name: Updating and restarting the service on remote host
-      uses: appleboy/ssh-action@0.1.3
+      uses: appleboy/ssh-action@v0.1.3
       with:
         host: ${{ secrets.RR_HOST }}
         username: ${{ secrets.RR_USERNAME }}
