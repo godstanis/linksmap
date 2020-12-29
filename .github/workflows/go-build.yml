@@ -27,7 +27,7 @@ jobs:
         fi
 
     - name: Build
-      run: go build -v linksmap.go
+      run: go build -v ./cmd/linksmap.go
 
     - name: Prepare build artifacts
       run: mkdir ./artifacts; mkdir ./artifacts/ui; mv ./linksmap ./artifacts; mv ./ui ./artifacts

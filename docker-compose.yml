@@ -8,4 +8,4 @@ services:
     restart: always
     volumes:
       - .:/go/src/linksmap
-    command: "bash -c 'go version && go get ./... && go run linksmap.go'"
+    command: "bash -c 'go version && go get ./... && go run ./cmd/linksmap.go'"
