@@ -8,17 +8,18 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     
-#     steps:
-#     - name: Updating and restarting the service on remote host
-#       uses: appleboy/ssh-action@v0.1.4
-#       with:
-#         host: ${{ secrets.RR_HOST }}
-#         username: ${{ secrets.RR_USERNAME }}
-#         key: ${{ secrets.RR_PRIVATE }}
-#         script: |
-#           cd dc-apps/go/linksmap/
-#           docker-compose down
-#           git reset --hard
-#           git pull
-#           go get ./...
-#           docker-compose up -d
+    steps:
+    - name: Updating and restarting the service on remote host
+      uses: appleboy/ssh-action@v0.1.4
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        port: ${{ secrets.PORT }}
+        key: ${{ secrets.RR_PRIVATE }}
+        script: |
+          cd dc-apps/go/linksmap/
+          docker-compose down
+          git reset --hard
+          git pull
+          go get ./...
+          docker-compose up -d
