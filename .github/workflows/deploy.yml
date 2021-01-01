@@ -10,6 +10,8 @@ jobs:
     
     steps:
     - name: Updating and restarting the service on remote host
+      env:
+        LINKSMAP_HOSTNAME: $(LINKSMAP_HOSTNAME)
       uses: garygrossgarten/github-action-ssh@release
       with:
         host: ${{ secrets.RR_HOST }}

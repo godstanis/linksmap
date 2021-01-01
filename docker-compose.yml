@@ -1,7 +1,7 @@
 version: '3'
 services:
   web:
-    image: golang:1.13
+    image: golang:1.14
     ports:
       - "80:8080"
     working_dir: "/go/src/linksmap"
