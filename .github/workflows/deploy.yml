@@ -9,14 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Repository checkout
-      uses: actions/checkout@v2
     - name: Updating and restarting the service on remote host
-      uses: appleboy/ssh-action@v0.1.4
+      uses: cross-the-world/ssh-pipeline@master
       with:
         host: ${{ secrets.RR_HOST }}
-        username: ${{ secrets.RR_USERNAME }}
-        port: ${{ secrets.RR_PORT }}
+        user: ${{ secrets.RR_USERNAME }}
         key: ${{ secrets.RR_PRIVATE }}
         script: |
           cd dc-apps/go/linksmap/
