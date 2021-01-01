@@ -18,7 +18,7 @@ jobs:
 #         password: ${{ secrets.RR_PASSWORD }}
         command: |
           cd dc-apps/go/linksmap/
-          docker-compose down
+          docker-compose down -v
           git reset --hard
           git pull
           go get ./...
