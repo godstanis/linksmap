@@ -23,9 +23,9 @@
 
 - #### Manual
 
-1. Make sure you have [go](https://golang.org/) installed on your machine. This project was made on `1.13.4`
+1. Make sure you have [go](https://golang.org/) installed on your machine. This project was tested on `1.14`
 2. Run `go get ./..` to get all project dependencies
-3. Start the application with `go run linksmap.go`
+3. Start the application with `go run ./cmd`
 
     That's it, the server will be available on `http://localhost:8080`
 
