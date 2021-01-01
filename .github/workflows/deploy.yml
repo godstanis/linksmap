@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
+    - name: Repository checkout
+      uses: actions/checkout@v2
     - name: Updating and restarting the service on remote host
       uses: appleboy/ssh-action@v0.1.4
       with:
