@@ -15,6 +15,7 @@ jobs:
         host: ${{ secrets.RR_HOST }}
         username: ${{ secrets.RR_USERNAME }}
         privateKey: ${{ secrets.RR_PRIVATE }}
+        password: ${{ secrets.RR_PASSWORD }}
         command: |
           cd dc-apps/go/linksmap/
           docker-compose down
