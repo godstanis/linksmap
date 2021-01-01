@@ -10,12 +10,12 @@ jobs:
     
     steps:
     - name: Updating and restarting the service on remote host
-      uses: cross-the-world/ssh-pipeline@master
+      uses: garygrossgarten/github-action-ssh@release
       with:
         host: ${{ secrets.RR_HOST }}
-        user: ${{ secrets.RR_USERNAME }}
-        key: ${{ secrets.RR_PRIVATE }}
-        script: |
+        username: ${{ secrets.RR_USERNAME }}
+        privatekey: ${{ secrets.RR_PRIVATE }}
+        command: |
           cd dc-apps/go/linksmap/
           docker-compose down
           git reset --hard
